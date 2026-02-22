@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Gym Trainer</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 18px;
+    line-height: 1.5;
+    color: #1a1a1a;
+    background: #f5f5f5;
+    min-height: 100vh;
+    -webkit-text-size-adjust: 100%;
+  }
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+  h1 { font-size: 28px; text-align: center; margin-bottom: 8px; }
+  h2 { font-size: 22px; margin-bottom: 12px; }
+  .subtitle { text-align: center; color: #666; margin-bottom: 8px; font-size: 16px; }
+  .week-display {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: #2563eb;
+    background: #eff6ff;
+    padding: 10px 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  /* Home screen */
+  .session-btn {
+    display: block;
+    width: 100%;
+    padding: 24px 20px;
+    margin-bottom: 12px;
+    font-size: 20px;
+    font-weight: 700;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    text-align: left;
+    color: #fff;
+    line-height: 1.3;
+  }
+  .session-btn .label { font-size: 15px; font-weight: 400; opacity: 0.9; display: block; margin-top: 4px; }
+  .session-a { background: #2563eb; }
+  .session-b { background: #16a34a; }
+  .session-c { background: #9333ea; }
+
+  /* Exercise view */
+  .exercise-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    font-size: 15px;
+    color: #666;
+  }
+  .progress-dots { display: flex; gap: 6px; flex-wrap: wrap; }
+  .progress-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #ddd;
+  }
+  .progress-dot.done { background: #2563eb; }
+  .progress-dot.current { background: #2563eb; border: 2px solid #1d4ed8; }
+
+  .exercise-category {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    display: inline-block;
+  }
+  .cat-warmup { background: #fef3c7; color: #92400e; }
+  .cat-main { background: #fee2e2; color: #991b1b; }
+  .cat-push { background: #dbeafe; color: #1e40af; }
+  .cat-pull { background: #d1fae5; color: #065f46; }
+  .cat-legs { background: #fce7f3; color: #9d174d; }
+  .cat-accessory { background: #e0e7ff; color: #3730a3; }
+  .cat-posture { background: #f3e8ff; color: #6b21a8; }
+  .cat-cooldown { background: #ccfbf1; color: #115e59; }
+  .cat-functional { background: #ffedd5; color: #9a3412; }
+  .cat-mobility { background: #ccfbf1; color: #115e59; }
+  .cat-hamstring { background: #fce7f3; color: #9d174d; }
+
+  .exercise-name {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .exercise-name a {
+    color: #1a1a1a;
+    text-decoration: underline;
+    text-decoration-color: #2563eb;
+    text-underline-offset: 3px;
+  }
+  .sets-reps {
+    font-size: 28px;
+    font-weight: 800;
+    color: #2563eb;
+    margin-bottom: 4px;
+  }
+
+  /* Suggested weight */
+  .suggested-weight {
+    font-size: 18px;
+    font-weight: 700;
+    color: #16a34a;
+    background: #f0fdf4;
+    padding: 8px 14px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+
+  .exercise-notes {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 12px;
+  }
+
+  /* GIF toggle */
+  .gif-toggle {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2563eb;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+  }
+  .gif-container {
+    display: none;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .gif-container.show { display: block; }
+  .gif-container img {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 10px;
+  }
+
+  /* Elbow warning */
+  .elbow-warning {
+    background: #fffbeb;
+    border: 1px solid #f59e0b;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 15px;
+  }
+  .elbow-warning summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #b45309;
+    font-size: 16px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .elbow-warning summary::-webkit-details-marker { display: none; }
+  .elbow-alt { margin-top: 8px; color: #78350f; }
+
+  /* Navigation buttons */
+  .nav-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .nav-btn {
+    flex: 1;
+    padding: 18px;
+    font-size: 18px;
+    font-weight: 700;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    text-align: center;
+  }
+  .nav-btn.back { background: #e5e7eb; color: #374151; }
+  .nav-btn.next { background: #2563eb; color: #fff; }
+  .nav-btn.home { background: #ef4444; color: #fff; }
+
+  /* Timer */
+  .timer-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .timer-overlay.show { display: flex; }
+  .timer-display {
+    font-size: 96px;
+    font-weight: 800;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .timer-label {
+    font-size: 20px;
+    color: #aaa;
+    margin-bottom: 20px;
+  }
+  .timer-buttons { display: flex; gap: 12px; margin-top: 30px; }
+  .timer-btn {
+    padding: 18px 36px;
+    font-size: 18px;
+    font-weight: 700;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+  }
+  .timer-btn.skip { background: #374151; color: #fff; }
+  .timer-btn.start { background: #2563eb; color: #fff; }
+
+  /* Screens */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* Stretch list */
+  .stretch-list { list-style: none; padding: 0; }
+  .stretch-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 17px;
+  }
+  .stretch-list li:last-child { border-bottom: none; }
+  .stretch-duration { color: #2563eb; font-weight: 600; }
+  .stretch-list .gif-toggle { display: inline-block; width: auto; }
+  .stretch-list .gif-container img { max-width: 200px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- HOME SCREEN -->
+  <div id="home-screen" class="screen active">
+    <h1>Gym Trainer</h1>
+    <p class="subtitle">Full Body - 3 Week Cycle</p>
+    <div class="week-display" id="week-display"></div>
+
+    <button class="session-btn session-a" onclick="startSession('A')">
+      Session A
+      <span class="label">Squat Focus - Full Body</span>
+    </button>
+    <button class="session-btn session-b" onclick="startSession('B')">
+      Session B
+      <span class="label">Deadlift Focus - Full Body</span>
+    </button>
+    <button class="session-btn session-c" onclick="startSession('C')">
+      Session C
+      <span class="label">Functional - Full Body (Optional)</span>
+    </button>
+  </div>
+
+  <!-- SESSION SCREEN -->
+  <div id="session-screen" class="screen">
+    <div class="progress-bar">
+      <span id="progress-text"></span>
+      <div class="progress-dots" id="progress-dots"></div>
+    </div>
+    <div class="exercise-card" id="exercise-card"></div>
+    <div class="nav-buttons">
+      <button class="nav-btn home" id="btn-home" onclick="goHome()">Home</button>
+      <button class="nav-btn back" id="btn-back" onclick="prevExercise()">Back</button>
+      <button class="nav-btn next" id="btn-next" onclick="nextExercise()">Next</button>
+    </div>
+  </div>
+</div>
+
+<!-- REST TIMER OVERLAY -->
+<div class="timer-overlay" id="timer-overlay">
+  <div class="timer-label" id="timer-label">Rest</div>
+  <div class="timer-display" id="timer-display">90</div>
+  <div class="timer-buttons">
+    <button class="timer-btn skip" onclick="skipTimer()">Skip</button>
+    <button class="timer-btn start" id="timer-start-btn" onclick="startTimer()">Start</button>
+  </div>
+</div>
+
+<script>
+// ============================================
+// CONFIG - Change this to your actual start date
+// ============================================
+const START_DATE = new Date('2026-02-24'); // Monday of first training week
+
+// ============================================
+// AUTO WEEK CALCULATION
+// ============================================
+function getCurrentWeek() {
+  const now = new Date();
+  const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+  const weeksSinceStart = Math.floor((now - START_DATE) / msPerWeek);
+  // Before start date, default to week 1
+  if (weeksSinceStart < 0) return 1;
+  return (weeksSinceStart % 3) + 1;
+}
+
+function getMonthsSinceStart() {
+  const now = new Date();
+  const years = now.getFullYear() - START_DATE.getFullYear();
+  const months = now.getMonth() - START_DATE.getMonth();
+  const days = now.getDate() - START_DATE.getDate();
+  return Math.max(0, years * 12 + months + days / 30);
+}
+
+// ============================================
+// GOMPERTZ STRENGTH PROGRESSION MODEL
+// ============================================
+// Gompertz: y(t) = maxRM * exp(-b * exp(-c * t))
+// c = 0.0357 per month (calibrated: 80% at 21mo, 90% at 42mo)
+// b = -ln(currentRM / maxRM)
+const GOMPERTZ_C = 0.0357;
+
+// Available dumbbell weights (kg)
+const DB_WEIGHTS = [4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44];
+
+function roundBarbell(kg) { return Math.round(kg / 2.5) * 2.5; }
+function roundMachine(kg) { return Math.round(kg / 5) * 5; }
+function roundDumbbell(kg) {
+  let closest = DB_WEIGHTS[0];
+  for (const w of DB_WEIGHTS) {
+    if (Math.abs(w - kg) < Math.abs(closest - kg)) closest = w;
+  }
+  return closest;
+}
+
+// Epley: 1RM = w * (1 + r/30), so working weight = 1RM / (1 + r/30)
+function oneRMToWorking(oneRM, reps) {
+  return oneRM / (1 + reps / 30);
+}
+
+function gompertzPredict(current1RM, max1RM, monthsElapsed) {
+  if (current1RM >= max1RM) return max1RM;
+  const b = -Math.log(current1RM / max1RM);
+  return max1RM * Math.exp(-b * Math.exp(-GOMPERTZ_C * monthsElapsed));
+}
+
+// Exercise strength database: current1RM, max1RM, type (barbell/dumbbell/machine), isDual (for dumbbells)
+const STRENGTH_DB = {
+  'Barbell Back Squat':              { current1RM: 47.5, max1RM: 140, type: 'barbell' },
+  'Barbell Deadlift':                { current1RM: 60,   max1RM: 170, type: 'barbell' },
+  'Machine Chest Press':             { current1RM: 70,   max1RM: 120, type: 'machine' },
+  'Seated Chest Press':              { current1RM: 70,   max1RM: 120, type: 'machine' },
+  'Seated Incline Press':            { current1RM: 65,   max1RM: 110, type: 'machine' },
+  'Dumbbell Flat Bench Press':       { current1RM: 20,   max1RM: 38,  type: 'dumbbell', isDual: true },
+  'Dumbbell Incline Press':          { current1RM: 18,   max1RM: 34,  type: 'dumbbell', isDual: true },
+  'Dumbbell Floor Press':            { current1RM: 18,   max1RM: 34,  type: 'dumbbell', isDual: true },
+  'Dumbbell Floor Press (Single Arm)': { current1RM: 16, max1RM: 30,  type: 'dumbbell', isDual: false },
+  'Dumbbell Shoulder Press':         { current1RM: 14,   max1RM: 28,  type: 'dumbbell', isDual: true },
+  'Cable Seated Row':                { current1RM: 40,   max1RM: 80,  type: 'machine' },
+  'Cable Seated Row (Wide Grip)':    { current1RM: 40,   max1RM: 80,  type: 'machine' },
+  'Cable Row (Single Arm)':          { current1RM: 20,   max1RM: 40,  type: 'machine' },
+  'Dumbbell Single Arm Row':         { current1RM: 20,   max1RM: 40,  type: 'dumbbell', isDual: false },
+  'Lat Pulldown':                    { current1RM: 40,   max1RM: 75,  type: 'machine' },
+  'Lat Pulldown (Close Grip)':       { current1RM: 40,   max1RM: 75,  type: 'machine' },
+  'Leg Press':                       { current1RM: 100,  max1RM: 250, type: 'machine' },
+  '45-Degree Leg Press (Narrow)':    { current1RM: 100,  max1RM: 250, type: 'machine' },
+  'Goblet Squat':                    { current1RM: 24,   max1RM: 44,  type: 'dumbbell', isDual: false },
+  'Romanian Deadlift (Dumbbells)':   { current1RM: 20,   max1RM: 40,  type: 'dumbbell', isDual: true },
+  'Romanian Deadlift (Single Leg)':  { current1RM: 14,   max1RM: 30,  type: 'dumbbell', isDual: false },
+  'Leg Extension':                   { current1RM: 30,   max1RM: 70,  type: 'machine' },
+  'Seated Leg Curl':                 { current1RM: 25,   max1RM: 55,  type: 'machine' },
+  '45-Degree Back Extension':        { current1RM: 0,    max1RM: 30,  type: 'bodyweight' },
+  'Walking Lunges':                  { current1RM: 12,   max1RM: 28,  type: 'dumbbell', isDual: true },
+  'Cable Face Pulls':                { current1RM: 15,   max1RM: 35,  type: 'machine' },
+  'Pec Deck Rear Delt Fly':         { current1RM: 5,    max1RM: 12,  type: 'dumbbell', isDual: true },
+  'Band Pull-Aparts':               { current1RM: 0,    max1RM: 0,   type: 'none' },
+  'Band/Cable Pull-Aparts':         { current1RM: 0,    max1RM: 0,   type: 'none' },
+  'Farmers Carry':                   { current1RM: 20,   max1RM: 44,  type: 'dumbbell', isDual: true },
+  'Push-Ups':                        { current1RM: 0,    max1RM: 0,   type: 'bodyweight' },
+  'Wall Ball Slams':                 { current1RM: 6,    max1RM: 9,   type: 'fixed' },
+  'Battle Ropes':                    { current1RM: 0,    max1RM: 0,   type: 'none' },
+  'Wall Bar Hanging':                { current1RM: 0,    max1RM: 0,   type: 'none' },
+  'Wall Bar Hanging + Leg Raise':    { current1RM: 0,    max1RM: 0,   type: 'none' },
+  'Gymnastic Ring Dead Hang':        { current1RM: 0,    max1RM: 0,   type: 'none' },
+};
+
+function getSuggestedWeight(exerciseName, reps) {
+  const data = STRENGTH_DB[exerciseName];
+  if (!data || data.type === 'none' || data.type === 'bodyweight' || data.type === 'fixed') {
+    if (data && data.type === 'bodyweight' && data.max1RM > 0) {
+      // Back extension: show added weight
+      const t = getMonthsSinceStart();
+      const predicted1RM = gompertzPredict(data.current1RM || 1, data.max1RM, t);
+      const working = oneRMToWorking(predicted1RM, reps);
+      return working > 2 ? `+ ${roundMachine(working)}kg` : 'Bodyweight';
+    }
+    if (data && data.type === 'fixed') {
+      const t = getMonthsSinceStart();
+      const predicted = gompertzPredict(data.current1RM, data.max1RM, t);
+      // Fixed weights: round to nearest available (6kg or 9kg wall balls)
+      return predicted >= 7.5 ? '9kg' : '6kg';
+    }
+    return null; // No weight suggestion
+  }
+
+  const t = getMonthsSinceStart();
+  const predicted1RM = gompertzPredict(data.current1RM, data.max1RM, t);
+  const working = oneRMToWorking(predicted1RM, reps);
+
+  if (data.type === 'barbell') {
+    return `${roundBarbell(working)}kg`;
+  } else if (data.type === 'machine') {
+    return `${roundMachine(working)}kg`;
+  } else if (data.type === 'dumbbell') {
+    const rounded = roundDumbbell(working);
+    return data.isDual ? `2 x ${rounded}kg` : `${rounded}kg`;
+  }
+  return null;
+}
+
+// Parse reps from sets string like "4 x 8" or "3 x 10 each" or "3 x 30m"
+function parseReps(setsStr) {
+  const match = setsStr.match(/\d+\s*x\s*(\d+)/);
+  return match ? parseInt(match[1]) : 0;
+}
+
+// ============================================
+// GIF DATABASE
+// ============================================
+const GIF_DB = {
+  'Barbell Back Squat': 'https://www.strengthlog.com/wp-content/uploads/2021/11/squat.gif',
+  'Seated Chest Press': 'https://www.strengthlog.com/wp-content/uploads/2020/03/machine-chest-press.gif',
+  'Machine Chest Press': 'https://www.strengthlog.com/wp-content/uploads/2020/03/machine-chest-press.gif',
+  'Seated Incline Press': 'https://www.strengthlog.com/wp-content/uploads/2020/03/machine-chest-press.gif',
+  'Cable Seated Row': 'https://www.strengthlog.com/wp-content/uploads/2020/03/cable-row-seated-narrow-grip.gif',
+  'Cable Seated Row (Wide Grip)': 'https://www.strengthlog.com/wp-content/uploads/2020/03/cable-row-seated-narrow-grip.gif',
+  '45-Degree Back Extension': 'https://www.strengthlog.com/wp-content/uploads/2020/05/back-extension-frontloaded.gif',
+  'Cable Face Pulls': 'https://www.strengthlog.com/wp-content/uploads/2020/05/face-pull.gif',
+  'Dumbbell Flat Bench Press': 'https://www.strengthlog.com/wp-content/uploads/2020/03/Dumbbell-Chest-Press.gif',
+  'Dumbbell Single Arm Row': 'https://www.strengthlog.com/wp-content/uploads/2020/03/Dumbbell-Row.gif',
+  'Leg Extension': 'https://www.strengthlog.com/wp-content/uploads/2020/03/leg-extension-seated.gif',
+  'Seated Leg Curl': 'https://www.strengthlog.com/wp-content/uploads/2020/03/leg-curl-seated.gif',
+  'Band Pull-Aparts': 'https://www.strengthlog.com/wp-content/uploads/2020/04/Band-Pull-Apart.gif',
+  'Band/Cable Pull-Aparts': 'https://www.strengthlog.com/wp-content/uploads/2020/04/Band-Pull-Apart.gif',
+  'Pec Deck Rear Delt Fly': 'https://www.strengthlog.com/wp-content/uploads/2025/11/reverse-machine-fly.gif',
+  'Barbell Deadlift': 'https://www.strengthlog.com/wp-content/uploads/2020/11/Deadlift.gif',
+  'Dumbbell Incline Press': 'https://www.strengthlog.com/wp-content/uploads/2020/03/Dumbbell-Incline-Press.gif',
+  'Lat Pulldown': 'https://www.strengthlog.com/wp-content/uploads/2020/03/lat-pulldown-with-pronated-grip.gif',
+  'Lat Pulldown (Close Grip)': 'https://www.strengthlog.com/wp-content/uploads/2020/03/lat-pulldown-with-pronated-grip.gif',
+  'Leg Press': 'https://www.strengthlog.com/wp-content/uploads/2025/11/leg-press.gif',
+  '45-Degree Leg Press (Narrow)': 'https://www.strengthlog.com/wp-content/uploads/2025/11/leg-press.gif',
+  'Walking Lunges': 'https://www.strengthlog.com/wp-content/uploads/2025/06/walking-dumbbell-lunges.gif',
+  'Dumbbell Shoulder Press': 'https://www.strengthlog.com/wp-content/uploads/2020/02/Dumbbell-shoulder-press.gif',
+  'Goblet Squat': 'https://www.strengthlog.com/wp-content/uploads/2020/02/Goblet-squat.gif',
+  'Dumbbell Floor Press': 'https://www.strengthlog.com/wp-content/uploads/2022/09/dumbbell-floor-press.gif',
+  'Dumbbell Floor Press (Single Arm)': 'https://www.strengthlog.com/wp-content/uploads/2022/09/dumbbell-floor-press.gif',
+  'Cable Row (Single Arm)': 'https://www.strengthlog.com/wp-content/uploads/2020/04/cable-row-seated-single-arm.gif',
+  'Romanian Deadlift (Dumbbells)': 'https://www.strengthlog.com/wp-content/uploads/2022/09/romanian-deadlift-with-dumbbells.gif',
+  'Romanian Deadlift (Single Leg)': 'https://www.strengthlog.com/wp-content/uploads/2022/09/romanian-deadlift-with-dumbbells.gif',
+  'Farmers Carry': 'https://www.strengthlog.com/wp-content/uploads/2021/01/Farmers-walk.gif',
+  'Wall Ball Slams': 'https://www.strengthlog.com/wp-content/uploads/2024/02/slam-ball.gif',
+  'Push-Ups': 'https://www.strengthlog.com/wp-content/uploads/2020/02/Push-up.gif',
+};
+
+// Stretch & warm-up GIF database (from fitnessprogramer.com)
+const STRETCH_GIF_DB = {
+  'Standing Hamstring Stretch': 'https://fitnessprogramer.com/wp-content/uploads/2021/05/Standing-Hamstring-Stretch.gif',
+  'Doorway Chest Stretch': 'https://fitnessprogramer.com/wp-content/uploads/2021/01/Doorway-chest-and-sshoulder-stretch.gif',
+  'Chest Stretch on Bench': 'https://fitnessprogramer.com/wp-content/uploads/2021/01/Doorway-chest-and-sshoulder-stretch.gif',
+  'Chin Tucks': 'https://fitnessprogramer.com/wp-content/uploads/2021/06/Chin-Tuck.gif',
+  'Hip Flexor Lunge Stretch': 'https://fitnessprogramer.com/wp-content/uploads/2021/08/Kneeling-Hip-Flexor-Stretch.gif',
+  'Leg Swings': 'https://fitnessprogramer.com/wp-content/uploads/2025/07/Leg-Swings-Front-to-Back.gif',
+  'Arm Circles': 'https://fitnessprogramer.com/wp-content/uploads/2021/07/Arm-Circles_Shoulders.gif',
+  'Hip Circles': 'https://fitnessprogramer.com/wp-content/uploads/2021/01/hip-circles.gif',
+  'Thoracic Rotations': 'https://fitnessprogramer.com/wp-content/uploads/2022/08/Kneeling-T-spine-Rotation.gif',
+  'Lateral Leg Swings': 'https://fitnessprogramer.com/wp-content/uploads/2023/06/Lateral-Leg-Swings.gif',
+};
+
+// ============================================
+// EXERCISE DATA
+// ============================================
+const EXERCISES = {
+  A: {
+    1: [
+      { name: "Stair Machine", sets: "5 min", category: "warmup", notes: "Moderate pace to warm up" },
+      { name: "Dynamic Stretches", sets: "5 min", category: "warmup", stretches: [
+        { name: "Leg Swings", duration: "10 each leg", desc: "Hold wall, swing leg forward and back" },
+        { name: "Arm Circles", duration: "10 each direction", desc: "Small to large circles, forward then backward" },
+        { name: "Hip Circles", duration: "10 each direction", desc: "Hands on hips, circle hips wide" },
+        { name: "Thoracic Rotations", duration: "10 each side", desc: "On all fours, hand behind head, rotate open" },
+        { name: "Cat-Cow", duration: "10 reps", desc: "Hands and knees, arch and round spine slowly" }
+      ]},
+      { name: "Barbell Back Squat", sets: "4 x 8", category: "main", notes: "Main lift - go heavy", rest: 90 },
+      { name: "Seated Chest Press", sets: "3 x 10", category: "push", notes: "Machine - controlled reps", rest: 60, elbow: true, elbowAlt: "Use lighter weight or dumbbell floor press if elbow hurts" },
+      { name: "Cable Seated Row", sets: "3 x 10", category: "pull", notes: "Squeeze shoulder blades together - great for posture", rest: 60 },
+      { name: "45-Degree Back Extension", sets: "3 x 12", category: "accessory", notes: "Slow and controlled - squeeze glutes at top", rest: 60 },
+      { name: "Cable Face Pulls", sets: "3 x 15", category: "posture", notes: "Light weight, pull to forehead, hold 1 sec", rest: 60 },
+      { name: "Cool-Down Stretches", sets: "5 min", category: "cooldown", stretches: [
+        { name: "Standing Hamstring Stretch", duration: "30 sec each leg", desc: "Foot on bench, hinge forward at hips" },
+        { name: "Doorway Chest Stretch", duration: "30 sec each side", desc: "Arm on door frame, lean through - opens up tight chest" },
+        { name: "Chin Tucks", duration: "10 reps, hold 5 sec", desc: "Pull chin straight back, making a double chin - fixes forward head" },
+        { name: "Upper Trap Stretch", duration: "30 sec each side", desc: "Tilt ear to shoulder, gentle hand pressure" },
+        { name: "Left Elbow Flexion Stretch", duration: "30 sec", desc: "Gently push left forearm toward shoulder with right hand - don't force it" }
+      ]}
+    ],
+    2: [
+      { name: "Stair Machine", sets: "5 min", category: "warmup", notes: "Moderate pace to warm up" },
+      { name: "Dynamic Stretches", sets: "5 min", category: "warmup", stretches: [
+        { name: "Leg Swings", duration: "10 each leg", desc: "Hold wall, swing leg forward and back" },
+        { name: "Arm Circles", duration: "10 each direction", desc: "Small to large circles, forward then backward" },
+        { name: "Hip Circles", duration: "10 each direction", desc: "Hands on hips, circle hips wide" },
+        { name: "Thoracic Rotations", duration: "10 each side", desc: "On all fours, hand behind head, rotate open" },
+        { name: "Cat-Cow", duration: "10 reps", desc: "Hands and knees, arch and round spine slowly" }
+      ]},
+      { name: "Barbell Back Squat", sets: "4 x 8", category: "main", notes: "Main lift - try to add 2.5kg from last week if all reps were clean", rest: 90 },
+      { name: "Dumbbell Flat Bench Press", sets: "3 x 10", category: "push", notes: "Full range of motion", rest: 60, elbow: true, elbowAlt: "Switch to dumbbell floor press to limit ROM if elbow is sore" },
+      { name: "Dumbbell Single Arm Row", sets: "3 x 10 each", category: "pull", notes: "Knee on bench, pull to hip", rest: 60 },
+      { name: "Leg Extension", sets: "3 x 12", category: "accessory", notes: "Controlled - don't swing", rest: 60 },
+      { name: "Band Pull-Aparts", sets: "3 x 15", category: "posture", notes: "Chest height, squeeze shoulder blades - posture gold", rest: 60 },
+      { name: "Cool-Down Stretches", sets: "5 min", category: "cooldown", stretches: [
+        { name: "Standing Hamstring Stretch", duration: "30 sec each leg", desc: "Foot on bench, hinge forward at hips" },
+        { name: "Doorway Chest Stretch", duration: "30 sec each side", desc: "Arm on door frame, lean through" },
+        { name: "Chin Tucks", duration: "10 reps, hold 5 sec", desc: "Pull chin straight back - fixes forward head" },
+        { name: "Upper Trap Stretch", duration: "30 sec each side", desc: "Tilt ear to shoulder, gentle hand pressure" },
+        { name: "Left Elbow Flexion Stretch", duration: "30 sec", desc: "Gently push left forearm toward shoulder with right hand" }
+      ]}
+    ],
+    3: [
+      { name: "Stair Machine", sets: "5 min", category: "warmup", notes: "Moderate pace to warm up" },
+      { name: "Dynamic Stretches", sets: "5 min", category: "warmup", stretches: [
+        { name: "Leg Swings", duration: "10 each leg", desc: "Hold wall, swing leg forward and back" },
+        { name: "Arm Circles", duration: "10 each direction", desc: "Small to large circles, forward then backward" },
+        { name: "Hip Circles", duration: "10 each direction", desc: "Hands on hips, circle hips wide" },
+        { name: "Thoracic Rotations", duration: "10 each side", desc: "On all fours, hand behind head, rotate open" },
+        { name: "Cat-Cow", duration: "10 reps", desc: "Hands and knees, arch and round spine slowly" }
+      ]},
+      { name: "Barbell Back Squat", sets: "4 x 8", category: "main", notes: "Main lift - last week of cycle, aim for best weight", rest: 90 },
+      { name: "Seated Incline Press", sets: "3 x 10", category: "push", notes: "Machine - hits upper chest and shoulders", rest: 60, elbow: true, elbowAlt: "Reduce weight or switch to push-ups if elbow complains" },
+      { name: "Cable Seated Row (Wide Grip)", sets: "3 x 10", category: "pull", notes: "Wide grip - targets mid back and rear delts", rest: 60 },
+      { name: "Seated Leg Curl", sets: "3 x 12", category: "accessory", notes: "Squeeze at bottom, slow negative", rest: 60 },
+      { name: "Pec Deck Rear Delt Fly", sets: "3 x 15", category: "posture", notes: "Face the machine - light weight, squeeze rear delts", rest: 60 },
+      { name: "Cool-Down Stretches", sets: "5 min", category: "cooldown", stretches: [
+        { name: "Standing Hamstring Stretch", duration: "30 sec each leg", desc: "Foot on bench, hinge forward at hips" },
+        { name: "Doorway Chest Stretch", duration: "30 sec each side", desc: "Arm on door frame, lean through" },
+        { name: "Chin Tucks", duration: "10 reps, hold 5 sec", desc: "Pull chin straight back - fixes forward head" },
+        { name: "Upper Trap Stretch", duration: "30 sec each side", desc: "Tilt ear to shoulder, gentle hand pressure" },
+        { name: "Left Elbow Flexion Stretch", duration: "30 sec", desc: "Gently push left forearm toward shoulder with right hand" }
+      ]}
+    ]
+  },
+  B: {
+    1: [
+      { name: "Stair Machine", sets: "5 min", category: "warmup", notes: "Moderate pace to warm up" },
+      { name: "Dynamic Stretches", sets: "5 min", category: "warmup", stretches: [
+        { name: "Hip Circles", duration: "10 each direction", desc: "Hands on hips, circle hips wide" },
+        { name: "Leg Swings", duration: "10 each leg", desc: "Hold wall, swing leg forward and back" },
+        { name: "Thoracic Rotations", duration: "10 each side", desc: "On all fours, hand behind head, rotate open" },
+        { name: "Arm Circles", duration: "10 each direction", desc: "Small to large circles, forward then backward" }
+      ]},
+      { name: "Barbell Deadlift", sets: "4 x 6", category: "main", notes: "Main lift - brace core, flat back", rest: 90 },
+      { name: "Dumbbell Incline Press", sets: "3 x 10", category: "push", notes: "Adjustable bench at 30-45 degrees", rest: 60, elbow: true, elbowAlt: "Reduce incline angle or switch to machine chest press if elbow flares up" },
+      { name: "Lat Pulldown", sets: "3 x 10", category: "pull", notes: "Wide grip, pull to upper chest", rest: 60 },
+      { name: "Leg Press", sets: "3 x 10", category: "legs", notes: "Feet shoulder width, full depth", rest: 90 },
+      { name: "Band/Cable Pull-Aparts", sets: "3 x 15", category: "posture", notes: "Light and controlled - posture work", rest: 60 },
+      { name: "Cool-Down Stretches", sets: "5 min", category: "cooldown", stretches: [
+        { name: "Standing Hamstring Stretch", duration: "30 sec each leg", desc: "Foot on bench, hinge forward at hips" },
+        { name: "Chest Stretch on Bench", duration: "30 sec", desc: "Lie on bench, arms out wide, let gravity open chest" },
+        { name: "Chin Tucks", duration: "10 reps, hold 5 sec", desc: "Pull chin straight back - fixes forward head" },
+        { name: "Neck Flexor Stretch", duration: "30 sec", desc: "Look up gently, open front of throat" },
+        { name: "Left Elbow Flexion Stretch", duration: "30 sec", desc: "Gently push left forearm toward shoulder with right hand" }
+      ]}
+    ],
+    2: [
+      { name: "Stair Machine", sets: "5 min", category: "warmup", notes: "Moderate pace to warm up" },
+      { name: "Dynamic Stretches", sets: "5 min", category: "warmup", stretches: [
+        { name: "Hip Circles", duration: "10 each direction", desc: "Hands on hips, circle hips wide" },
+        { name: "Leg Swings", duration: "10 each leg", desc: "Hold wall, swing leg forward and back" },
+        { name: "Thoracic Rotations", duration: "10 each side", desc: "On all fours, hand behind head, rotate open" },
+        { name: "Arm Circles", duration: "10 each direction", desc: "Small to large circles, forward then backward" }
+      ]},
+      { name: "Barbell Deadlift", sets: "4 x 6", category: "main", notes: "Main lift - try to add 2.5kg from last week", rest: 90 },
+      { name: "Seated Chest Press", sets: "3 x 10", category: "push", notes: "Machine - steady controlled reps", rest: 60, elbow: true, elbowAlt: "Use lighter weight or dumbbell floor press if elbow hurts" },
+      { name: "Cable Seated Row", sets: "3 x 10", category: "pull", notes: "Squeeze shoulder blades - posture builder", rest: 60 },
+      { name: "Walking Lunges", sets: "3 x 10 each leg", category: "legs", notes: "Dumbbells in each hand, long strides", rest: 90 },
+      { name: "Cable Face Pulls", sets: "3 x 15", category: "posture", notes: "Light weight, pull to forehead, hold 1 sec", rest: 60 },
+      { name: "Cool-Down Stretches", sets: "5 min", category: "cooldown", stretches: [
+        { name: "Standing Hamstring Stretch", duration: "30 sec each leg", desc: "Foot on bench, hinge forward at hips" },
+        { name: "Chest Stretch on Bench", duration: "30 sec", desc: "Lie on bench, arms out wide, let gravity open chest" },
+        { name: "Chin Tucks", duration: "10 reps, hold 5 sec", desc: "Pull chin straight back - fixes forward head" },
+        { name: "Neck Flexor Stretch", duration: "30 sec", desc: "Look up gently, open front of throat" },
+        { name: "Left Elbow Flexion Stretch", duration: "30 sec", desc: "Gently push left forearm toward shoulder with right hand" }
+      ]}
+    ],
+    3: [
+      { name: "Stair Machine", sets: "5 min", category: "warmup", notes: "Moderate pace to warm up" },
+      { name: "Dynamic Stretches", sets: "5 min", category: "warmup", stretches: [
+        { name: "Hip Circles", duration: "10 each direction", desc: "Hands on hips, circle hips wide" },
+        { name: "Leg Swings", duration: "10 each leg", desc: "Hold wall, swing leg forward and back" },
+        { name: "Thoracic Rotations", duration: "10 each side", desc: "On all fours, hand behind head, rotate open" },
+        { name: "Arm Circles", duration: "10 each direction", desc: "Small to large circles, forward then backward" }
+      ]},
+      { name: "Barbell Deadlift", sets: "4 x 6", category: "main", notes: "Main lift - last week, go for best weight this cycle", rest: 90 },
+      { name: "Dumbbell Shoulder Press", sets: "3 x 10", category: "push", notes: "Seated on upright bench", rest: 60, elbow: true, elbowAlt: "Stop if elbow pain - switch to lateral raises or machine press" },
+      { name: "Lat Pulldown (Close Grip)", sets: "3 x 10", category: "pull", notes: "V-bar or close grip handle - more bicep involvement", rest: 60 },
+      { name: "45-Degree Leg Press (Narrow)", sets: "3 x 10", category: "legs", notes: "Feet close together - more quad emphasis", rest: 90 },
+      { name: "Pec Deck Rear Delt Fly", sets: "3 x 15", category: "posture", notes: "Face the machine - light weight, squeeze rear delts", rest: 60 },
+      { name: "Cool-Down Stretches", sets: "5 min", category: "cooldown", stretches: [
+        { name: "Standing Hamstring Stretch", duration: "30 sec each leg", desc: "Foot on bench, hinge forward at hips" },
+        { name: "Chest Stretch on Bench", duration: "30 sec", desc: "Lie on bench, arms out wide, let gravity open chest" },
+        { name: "Chin Tucks", duration: "10 reps, hold 5 sec", desc: "Pull chin straight back - fixes forward head" },
+        { name: "Neck Flexor Stretch", duration: "30 sec", desc: "Look up gently, open front of throat" },
+        { name: "Left Elbow Flexion Stretch", duration: "30 sec", desc: "Gently push left forearm toward shoulder with right hand" }
+      ]}
+    ]
+  },
+  C: {
+    1: [
+      { name: "Stair Machine", sets: "5 min", category: "warmup", notes: "Moderate pace to warm up" },
+      { name: "Dynamic Stretches", sets: "5 min", category: "warmup", stretches: [
+        { name: "Hip Circles", duration: "10 each direction", desc: "Hands on hips, circle hips wide" },
+        { name: "Leg Swings", duration: "10 each leg", desc: "Hold wall, swing leg forward and back" },
+        { name: "Lateral Leg Swings", duration: "10 each leg", desc: "Face wall, swing leg side to side across body" },
+        { name: "Arm Circles", duration: "10 each direction", desc: "Small to large circles, forward then backward" },
+        { name: "Thoracic Rotations", duration: "10 each side", desc: "On all fours, hand behind head, rotate open" }
+      ]},
+      { name: "Goblet Squat", sets: "3 x 12", category: "main", notes: "Hold dumbbell at chest, deep squat, elbows inside knees", rest: 90 },
+      { name: "Dumbbell Floor Press", sets: "3 x 10", category: "push", notes: "Lie on floor - limited ROM protects elbow", rest: 60, elbow: true, elbowAlt: "This is already the elbow-friendly option! Reduce weight if needed" },
+      { name: "Cable Row (Single Arm)", sets: "3 x 10 each", category: "pull", notes: "Stand side-on to cable, twist slightly for core engagement", rest: 60 },
+      { name: "Romanian Deadlift (Dumbbells)", sets: "3 x 10", category: "hamstring", notes: "Slow descent, feel the hamstring stretch - great for flexibility", rest: 60 },
+      { name: "Farmers Carry", sets: "3 x 30m", category: "functional", notes: "Heavy dumbbells, walk tall, shoulders back - amazing for posture", rest: 60 },
+      { name: "Wall Bar Hanging", sets: "3 x 30 sec", category: "mobility", notes: "Dead hang - decompresses spine, opens shoulders", rest: 30 },
+      { name: "Cool-Down Stretches", sets: "7 min", category: "cooldown", notes: "Extended stretch session", stretches: [
+        { name: "Standing Hamstring Stretch", duration: "45 sec each leg", desc: "Foot on bench, hinge forward at hips - longer hold today" },
+        { name: "Hip Flexor Lunge Stretch", duration: "45 sec each side", desc: "Rear knee on mat, push hips forward" },
+        { name: "Doorway Chest Stretch", duration: "30 sec each side", desc: "Arm on door frame, lean through" },
+        { name: "Chin Tucks", duration: "10 reps, hold 5 sec", desc: "Pull chin straight back - fixes forward head" },
+        { name: "Cat-Cow on Mat", duration: "10 slow reps", desc: "Hands and knees, arch and round spine" },
+        { name: "Left Elbow Flexion Stretch", duration: "45 sec", desc: "Gently push left forearm toward shoulder - longer hold today" }
+      ]}
+    ],
+    2: [
+      { name: "Stair Machine", sets: "5 min", category: "warmup", notes: "Moderate pace to warm up" },
+      { name: "Dynamic Stretches", sets: "5 min", category: "warmup", stretches: [
+        { name: "Hip Circles", duration: "10 each direction", desc: "Hands on hips, circle hips wide" },
+        { name: "Leg Swings", duration: "10 each leg", desc: "Hold wall, swing leg forward and back" },
+        { name: "Lateral Leg Swings", duration: "10 each leg", desc: "Face wall, swing leg side to side across body" },
+        { name: "Arm Circles", duration: "10 each direction", desc: "Small to large circles, forward then backward" },
+        { name: "Thoracic Rotations", duration: "10 each side", desc: "On all fours, hand behind head, rotate open" }
+      ]},
+      { name: "Goblet Squat", sets: "3 x 12", category: "main", notes: "Hold dumbbell at chest, sit deep", rest: 90 },
+      { name: "Push-Ups", sets: "3 x 10", category: "push", notes: "Full range, chest to floor", rest: 60 },
+      { name: "Lat Pulldown", sets: "3 x 10", category: "pull", notes: "Wide grip, pull to chest", rest: 60 },
+      { name: "Seated Leg Curl", sets: "3 x 10", category: "hamstring", notes: "Controlled reps - hamstring strength", rest: 60 },
+      { name: "Wall Ball Slams", sets: "3 x 12", category: "functional", notes: "6kg ball - explosive! Full body power", rest: 60 },
+      { name: "Gymnastic Ring Dead Hang", sets: "3 x 30 sec", category: "mobility", notes: "Rings allow natural wrist rotation - great for shoulders", rest: 30 },
+      { name: "Cool-Down Stretches", sets: "7 min", category: "cooldown", notes: "Extended stretch session", stretches: [
+        { name: "Standing Hamstring Stretch", duration: "45 sec each leg", desc: "Foot on bench, hinge forward at hips - longer hold today" },
+        { name: "Hip Flexor Lunge Stretch", duration: "45 sec each side", desc: "Rear knee on mat, push hips forward" },
+        { name: "Doorway Chest Stretch", duration: "30 sec each side", desc: "Arm on door frame, lean through" },
+        { name: "Chin Tucks", duration: "10 reps, hold 5 sec", desc: "Pull chin straight back - fixes forward head" },
+        { name: "Cat-Cow on Mat", duration: "10 slow reps", desc: "Hands and knees, arch and round spine" },
+        { name: "Left Elbow Flexion Stretch", duration: "45 sec", desc: "Gently push left forearm toward shoulder - longer hold today" }
+      ]}
+    ],
+    3: [
+      { name: "Stair Machine", sets: "5 min", category: "warmup", notes: "Moderate pace to warm up" },
+      { name: "Dynamic Stretches", sets: "5 min", category: "warmup", stretches: [
+        { name: "Hip Circles", duration: "10 each direction", desc: "Hands on hips, circle hips wide" },
+        { name: "Leg Swings", duration: "10 each leg", desc: "Hold wall, swing leg forward and back" },
+        { name: "Lateral Leg Swings", duration: "10 each leg", desc: "Face wall, swing leg side to side across body" },
+        { name: "Arm Circles", duration: "10 each direction", desc: "Small to large circles, forward then backward" },
+        { name: "Thoracic Rotations", duration: "10 each side", desc: "On all fours, hand behind head, rotate open" }
+      ]},
+      { name: "Goblet Squat", sets: "3 x 12", category: "main", notes: "Hold dumbbell at chest - last week, use heaviest dumbbell you can manage", rest: 90 },
+      { name: "Dumbbell Floor Press (Single Arm)", sets: "3 x 10 each", category: "push", notes: "One arm at a time - great for core stability", rest: 60, elbow: true, elbowAlt: "This is already elbow-friendly. Switch to push-ups if needed" },
+      { name: "Dumbbell Single Arm Row", sets: "3 x 10 each", category: "pull", notes: "Knee on bench, pull dumbbell to hip", rest: 60 },
+      { name: "Romanian Deadlift (Single Leg)", sets: "3 x 10 each", category: "hamstring", notes: "Hold one dumbbell, balance on opposite leg - great for stability", rest: 60 },
+      { name: "Battle Ropes", sets: "3 x 30 sec", category: "functional", notes: "Alternating waves - full body cardio and power", rest: 60 },
+      { name: "Wall Bar Hanging + Leg Raise", sets: "3 x 10", category: "mobility", notes: "Hang from wall bars, raise knees to chest - core + decompression", rest: 30 },
+      { name: "Cool-Down Stretches", sets: "7 min", category: "cooldown", notes: "Extended stretch session", stretches: [
+        { name: "Standing Hamstring Stretch", duration: "45 sec each leg", desc: "Foot on bench, hinge forward at hips - longer hold today" },
+        { name: "Hip Flexor Lunge Stretch", duration: "45 sec each side", desc: "Rear knee on mat, push hips forward" },
+        { name: "Doorway Chest Stretch", duration: "30 sec each side", desc: "Arm on door frame, lean through" },
+        { name: "Chin Tucks", duration: "10 reps, hold 5 sec", desc: "Pull chin straight back - fixes forward head" },
+        { name: "Cat-Cow on Mat", duration: "10 slow reps", desc: "Hands and knees, arch and round spine" },
+        { name: "Left Elbow Flexion Stretch", duration: "45 sec", desc: "Gently push left forearm toward shoulder - longer hold today" }
+      ]}
+    ]
+  }
+};
+
+// ============================================
+// APP STATE
+// ============================================
+let currentWeek = getCurrentWeek();
+let currentSession = null;
+let currentExerciseIndex = 0;
+let currentExercises = [];
+let timerInterval = null;
+let timerSeconds = 0;
+let wakeLock = null;
+
+// ============================================
+// INIT
+// ============================================
+function init() {
+  currentWeek = getCurrentWeek();
+  const weekDisplay = document.getElementById('week-display');
+  const monthsIn = getMonthsSinceStart();
+  const monthsText = monthsIn < 1 ? 'Starting week' : `Month ${Math.floor(monthsIn) + 1}`;
+  weekDisplay.textContent = `Week ${currentWeek} of 3  \u2022  ${monthsText}`;
+}
+init();
+
+// ============================================
+// NAVIGATION
+// ============================================
+function startSession(session) {
+  currentSession = session;
+  currentExerciseIndex = 0;
+  currentExercises = EXERCISES[session][currentWeek];
+  showScreen('session-screen');
+  renderExercise();
+  requestWakeLock();
+}
+
+function goHome() {
+  currentSession = null;
+  currentExercises = [];
+  currentExerciseIndex = 0;
+  showScreen('home-screen');
+  releaseWakeLock();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function nextExercise() {
+  const ex = currentExercises[currentExerciseIndex];
+  if (currentExerciseIndex < currentExercises.length - 1) {
+    if (ex.rest) {
+      showTimer(ex.rest);
+    } else {
+      currentExerciseIndex++;
+      renderExercise();
+    }
+  }
+}
+
+function prevExercise() {
+  if (currentExerciseIndex > 0) {
+    currentExerciseIndex--;
+    renderExercise();
+  }
+}
+
+function advanceAfterTimer() {
+  currentExerciseIndex++;
+  renderExercise();
+}
+
+// ============================================
+// RENDER EXERCISE
+// ============================================
+let gifVisible = false;
+
+function toggleGif(id) {
+  const container = document.getElementById(id);
+  const btn = document.getElementById(id + '-btn');
+  if (container.classList.contains('show')) {
+    container.classList.remove('show');
+    btn.textContent = '\uD83C\uDFAC Show Exercise';
+  } else {
+    container.classList.add('show');
+    btn.textContent = '\uD83C\uDFAC Hide Exercise';
+    // Lazy load the image
+    const img = container.querySelector('img');
+    if (img && !img.src) {
+      img.src = img.dataset.src;
+    }
+  }
+}
+
+function renderExercise() {
+  const ex = currentExercises[currentExerciseIndex];
+  const card = document.getElementById('exercise-card');
+  const total = currentExercises.length;
+
+  // Progress text
+  document.getElementById('progress-text').textContent = `${currentExerciseIndex + 1} of ${total}`;
+
+  // Progress dots
+  const dotsContainer = document.getElementById('progress-dots');
+  dotsContainer.innerHTML = '';
+  for (let i = 0; i < total; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot';
+    if (i < currentExerciseIndex) dot.classList.add('done');
+    if (i === currentExerciseIndex) dot.classList.add('current');
+    dotsContainer.appendChild(dot);
+  }
+
+  // Category badge
+  const catClass = 'cat-' + ex.category;
+  const catLabels = {
+    warmup: 'Warm-Up', main: 'Main Lift', push: 'Push', pull: 'Pull',
+    legs: 'Legs', accessory: 'Accessory', posture: 'Posture', cooldown: 'Cool-Down',
+    functional: 'Functional', mobility: 'Mobility', hamstring: 'Hamstring'
+  };
+
+  let html = `<div class="exercise-category ${catClass}">${catLabels[ex.category] || ex.category}</div>`;
+
+  // Exercise name
+  html += `<div class="exercise-name">${ex.name}</div>`;
+
+  // Sets
+  html += `<div class="sets-reps">${ex.sets}</div>`;
+
+  // Suggested weight
+  const reps = parseReps(ex.sets);
+  if (reps > 0) {
+    const suggested = getSuggestedWeight(ex.name, reps);
+    if (suggested) {
+      html += `<div class="suggested-weight">\uD83C\uDFCB\uFE0F Suggested: ${suggested}</div>`;
+    }
+  }
+
+  // Notes
+  if (ex.notes) {
+    html += `<div class="exercise-notes">${ex.notes}</div>`;
+  }
+
+  // GIF toggle
+  const gifUrl = GIF_DB[ex.name];
+  if (gifUrl) {
+    const gifId = 'gif-' + currentExerciseIndex;
+    html += `<button class="gif-toggle" id="${gifId}-btn" onclick="toggleGif('${gifId}')">\uD83C\uDFAC Show Exercise</button>`;
+    html += `<div class="gif-container" id="${gifId}"><img data-src="${gifUrl}" alt="${ex.name} demonstration" /></div>`;
+  }
+
+  // Stretches list (for cool-down)
+  if (ex.stretches) {
+    html += '<ul class="stretch-list">';
+    ex.stretches.forEach((s, si) => {
+      const stretchGif = STRETCH_GIF_DB[s.name];
+      const stretchGifId = 'stretch-gif-' + currentExerciseIndex + '-' + si;
+      html += `<li><strong>${s.name}</strong> <span class="stretch-duration">${s.duration}</span>`;
+      if (stretchGif) {
+        html += `<br><button class="gif-toggle" style="margin-top:6px;padding:8px;font-size:14px;" id="${stretchGifId}-btn" onclick="toggleGif('${stretchGifId}')">\uD83C\uDFAC Show</button>`;
+        html += `<div class="gif-container" id="${stretchGifId}"><img data-src="${stretchGif}" alt="${s.name} demonstration" /></div>`;
+      }
+      html += `<br><span style="color:#888;font-size:14px;">${s.desc}</span></li>`;
+    });
+    html += '</ul>';
+  }
+
+  // Elbow warning
+  if (ex.elbow) {
+    html += `<details class="elbow-warning"><summary>\u26A0\uFE0F Left Elbow - Tap for Alternative</summary><div class="elbow-alt">${ex.elbowAlt}</div></details>`;
+  }
+
+  card.innerHTML = html;
+
+  // Update nav buttons
+  document.getElementById('btn-back').style.display = currentExerciseIndex === 0 ? 'none' : 'block';
+  document.getElementById('btn-next').textContent = currentExerciseIndex === total - 1 ? 'Finish' : 'Next';
+
+  if (currentExerciseIndex === total - 1) {
+    document.getElementById('btn-next').onclick = goHome;
+  } else {
+    document.getElementById('btn-next').onclick = nextExercise;
+  }
+}
+
+// ============================================
+// REST TIMER
+// ============================================
+function showTimer(seconds) {
+  timerSeconds = seconds;
+  const overlay = document.getElementById('timer-overlay');
+  const display = document.getElementById('timer-display');
+  const label = document.getElementById('timer-label');
+  const startBtn = document.getElementById('timer-start-btn');
+
+  label.textContent = 'Rest before next exercise';
+  display.textContent = seconds;
+  startBtn.textContent = 'Start';
+  startBtn.onclick = startTimer;
+  overlay.classList.add('show');
+}
+
+function startTimer() {
+  const display = document.getElementById('timer-display');
+  const startBtn = document.getElementById('timer-start-btn');
+  startBtn.textContent = 'Restart';
+  startBtn.onclick = () => {
+    clearInterval(timerInterval);
+    const ex = currentExercises[currentExerciseIndex];
+    timerSeconds = ex.rest;
+    display.textContent = timerSeconds;
+    startTimer();
+  };
+
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    display.textContent = timerSeconds;
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]);
+      playBeep();
+      display.textContent = '0';
+      document.getElementById('timer-label').textContent = 'Go!';
+      setTimeout(() => {
+        hideTimer();
+        advanceAfterTimer();
+      }, 2000);
+    }
+  }, 1000);
+}
+
+function skipTimer() {
+  clearInterval(timerInterval);
+  hideTimer();
+  advanceAfterTimer();
+}
+
+function hideTimer() {
+  document.getElementById('timer-overlay').classList.remove('show');
+}
+
+function playBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 800;
+    gain.gain.value = 0.3;
+    osc.start();
+    osc.stop(ctx.currentTime + 0.3);
+    setTimeout(() => {
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.frequency.value = 1000;
+      gain2.gain.value = 0.3;
+      osc2.start();
+      osc2.stop(ctx.currentTime + 0.3);
+    }, 400);
+  } catch (e) {}
+}
+
+// ============================================
+// WAKE LOCK
+// ============================================
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      wakeLock = await navigator.wakeLock.request('screen');
+    }
+  } catch (e) {}
+}
+
+function releaseWakeLock() {
+  if (wakeLock) {
+    wakeLock.release();
+    wakeLock = null;
+  }
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && currentSession) {
+    requestWakeLock();
+  }
+});
+</script>
+</body>
+</html>
