@@ -8,11 +8,11 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: Georgia, 'Times New Roman', serif;
     font-size: 18px;
     line-height: 1.5;
-    color: #1a1a1a;
-    background: #f5f5f5;
+    color: #2D2D2D;
+    background: #F2E9E9;
     min-height: 100vh;
     -webkit-text-size-adjust: 100%;
   }
@@ -21,15 +21,16 @@
     margin: 0 auto;
     padding: 16px;
   }
-  h1 { font-size: 28px; text-align: center; margin-bottom: 8px; }
+  h1 { font-size: 32px; text-align: center; margin-bottom: 8px; font-style: italic; color: #46658C; }
   h2 { font-size: 22px; margin-bottom: 12px; }
-  .subtitle { text-align: center; color: #666; margin-bottom: 8px; font-size: 16px; }
+  .subtitle { text-align: center; color: #BFADA8; margin-bottom: 8px; font-size: 16px; }
   .week-display {
     text-align: center;
     font-size: 15px;
     font-weight: 600;
-    color: #2563eb;
-    background: #eff6ff;
+    color: #46658C;
+    background: #fff;
+    border: 1px solid #BFADA8;
     padding: 10px 16px;
     border-radius: 10px;
     margin-bottom: 20px;
@@ -49,11 +50,12 @@
     text-align: left;
     color: #fff;
     line-height: 1.3;
+    font-family: Georgia, 'Times New Roman', serif;
   }
-  .session-btn .label { font-size: 15px; font-weight: 400; opacity: 0.9; display: block; margin-top: 4px; }
-  .session-a { background: #2563eb; }
-  .session-b { background: #16a34a; }
-  .session-c { background: #9333ea; }
+  .session-btn .label { font-size: 15px; font-weight: 400; opacity: 0.9; display: block; margin-top: 4px; font-family: Georgia, 'Times New Roman', serif; }
+  .session-a { background: #46658C; }
+  .session-b { background: #4A6D8C; }
+  .session-c { background: #D9895B; }
 
   /* Exercise view */
   .exercise-card {
@@ -61,7 +63,8 @@
     border-radius: 16px;
     padding: 24px;
     margin-bottom: 16px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(70,101,140,0.1);
+    border: 1px solid #e8ddd9;
   }
   .progress-bar {
     display: flex;
@@ -77,8 +80,8 @@
     border-radius: 50%;
     background: #ddd;
   }
-  .progress-dot.done { background: #2563eb; }
-  .progress-dot.current { background: #2563eb; border: 2px solid #1d4ed8; }
+  .progress-dot.done { background: #46658C; }
+  .progress-dot.current { background: #D9895B; border: 2px solid #c47a4f; }
 
   .exercise-category {
     font-size: 13px;
@@ -90,17 +93,17 @@
     border-radius: 6px;
     display: inline-block;
   }
-  .cat-warmup { background: #fef3c7; color: #92400e; }
-  .cat-main { background: #fee2e2; color: #991b1b; }
-  .cat-push { background: #dbeafe; color: #1e40af; }
-  .cat-pull { background: #d1fae5; color: #065f46; }
-  .cat-legs { background: #fce7f3; color: #9d174d; }
-  .cat-accessory { background: #e0e7ff; color: #3730a3; }
-  .cat-posture { background: #f3e8ff; color: #6b21a8; }
-  .cat-cooldown { background: #ccfbf1; color: #115e59; }
-  .cat-functional { background: #ffedd5; color: #9a3412; }
-  .cat-mobility { background: #ccfbf1; color: #115e59; }
-  .cat-hamstring { background: #fce7f3; color: #9d174d; }
+  .cat-warmup { background: #fdf1e6; color: #D9895B; }
+  .cat-main { background: #46658C; color: #fff; }
+  .cat-push { background: #dce5ef; color: #46658C; }
+  .cat-pull { background: #e8ddd9; color: #6b5650; }
+  .cat-legs { background: #f5ebe8; color: #D9895B; }
+  .cat-accessory { background: #dce5ef; color: #4A6D8C; }
+  .cat-posture { background: #BFADA8; color: #fff; }
+  .cat-cooldown { background: #e8f0e8; color: #4a6b4a; }
+  .cat-functional { background: #D9895B; color: #fff; }
+  .cat-mobility { background: #e8f0e8; color: #4a6b4a; }
+  .cat-hamstring { background: #f5ebe8; color: #D9895B; }
 
   .exercise-name {
     font-size: 24px;
@@ -108,15 +111,15 @@
     margin-bottom: 8px;
   }
   .exercise-name a {
-    color: #1a1a1a;
+    color: #2D2D2D;
     text-decoration: underline;
-    text-decoration-color: #2563eb;
+    text-decoration-color: #D9895B;
     text-underline-offset: 3px;
   }
   .sets-reps {
     font-size: 28px;
     font-weight: 800;
-    color: #2563eb;
+    color: #46658C;
     margin-bottom: 4px;
   }
 
@@ -124,8 +127,8 @@
   .suggested-weight {
     font-size: 18px;
     font-weight: 700;
-    color: #16a34a;
-    background: #f0fdf4;
+    color: #D9895B;
+    background: #fdf1e6;
     padding: 8px 14px;
     border-radius: 8px;
     margin-bottom: 10px;
@@ -147,12 +150,13 @@
     margin-bottom: 8px;
     font-size: 16px;
     font-weight: 600;
-    color: #2563eb;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
+    color: #46658C;
+    background: #dce5ef;
+    border: 1px solid #BFADA8;
     border-radius: 10px;
     cursor: pointer;
     text-align: center;
+    font-family: Georgia, 'Times New Roman', serif;
   }
   .gif-container {
     display: none;
@@ -205,9 +209,10 @@
     cursor: pointer;
     text-align: center;
   }
-  .nav-btn.back { background: #e5e7eb; color: #374151; }
-  .nav-btn.next { background: #2563eb; color: #fff; }
-  .nav-btn.home { background: #ef4444; color: #fff; }
+  .nav-btn { font-family: Georgia, 'Times New Roman', serif; }
+  .nav-btn.back { background: #BFADA8; color: #fff; }
+  .nav-btn.next { background: #46658C; color: #fff; }
+  .nav-btn.home { background: #D9895B; color: #fff; }
 
   /* Timer */
   .timer-overlay {
@@ -241,8 +246,9 @@
     border-radius: 14px;
     cursor: pointer;
   }
-  .timer-btn.skip { background: #374151; color: #fff; }
-  .timer-btn.start { background: #2563eb; color: #fff; }
+  .timer-btn { font-family: Georgia, 'Times New Roman', serif; }
+  .timer-btn.skip { background: #BFADA8; color: #fff; }
+  .timer-btn.start { background: #46658C; color: #fff; }
 
   /* Screens */
   .screen { display: none; }
@@ -256,7 +262,7 @@
     font-size: 17px;
   }
   .stretch-list li:last-child { border-bottom: none; }
-  .stretch-duration { color: #2563eb; font-weight: 600; }
+  .stretch-duration { color: #D9895B; font-weight: 600; }
   .stretch-list .gif-toggle { display: inline-block; width: auto; }
   .stretch-list .gif-container img { max-width: 200px; }
 </style>
@@ -487,11 +493,18 @@ const GIF_DB = {
 
 // Stretch & warm-up GIF database (from fitnessprogramer.com)
 const STRETCH_GIF_DB = {
+  // Cool-down stretches
   'Standing Hamstring Stretch': 'https://fitnessprogramer.com/wp-content/uploads/2021/05/Standing-Hamstring-Stretch.gif',
   'Doorway Chest Stretch': 'https://fitnessprogramer.com/wp-content/uploads/2021/01/Doorway-chest-and-sshoulder-stretch.gif',
   'Chest Stretch on Bench': 'https://fitnessprogramer.com/wp-content/uploads/2021/01/Doorway-chest-and-sshoulder-stretch.gif',
   'Chin Tucks': 'https://fitnessprogramer.com/wp-content/uploads/2021/06/Chin-Tuck.gif',
   'Hip Flexor Lunge Stretch': 'https://fitnessprogramer.com/wp-content/uploads/2021/08/Kneeling-Hip-Flexor-Stretch.gif',
+  'Upper Trap Stretch': 'https://fitnessprogramer.com/wp-content/uploads/2021/06/Side-Neck-Stretch.gif',
+  'Neck Flexor Stretch': 'https://fitnessprogramer.com/wp-content/uploads/2021/07/Neck-Extension-Stretching.png',
+  'Left Elbow Flexion Stretch': 'https://fitnessprogramer.com/wp-content/uploads/2021/01/Doorway-chest-and-sshoulder-stretch.gif',
+  'Cat-Cow': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/cat-cow.gif',
+  'Cat-Cow on Mat': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/cat-cow.gif',
+  // Warm-up dynamic stretches
   'Leg Swings': 'https://fitnessprogramer.com/wp-content/uploads/2025/07/Leg-Swings-Front-to-Back.gif',
   'Arm Circles': 'https://fitnessprogramer.com/wp-content/uploads/2021/07/Arm-Circles_Shoulders.gif',
   'Hip Circles': 'https://fitnessprogramer.com/wp-content/uploads/2021/01/hip-circles.gif',
