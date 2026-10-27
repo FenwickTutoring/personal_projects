@@ -1,6 +1,6 @@
 # Coffee, molecularly.
 
-A coffee flavour wheel that traces each tasting note back to the molecules behind it: 56 key odorants and tastants, from the green bean to the cup.
+A coffee flavour wheel that traces each tasting note back to the molecules behind it: 49 odorants and tastants, from the green bean to the cup. Every compound is referenced in [SOURCES.md](SOURCES.md).
 
 ![Coffee flavour chemistry wheel](preview.png)
 
@@ -19,6 +19,7 @@ Read it from the centre outwards:
 | [`index.html`](index.html) | Open in any browser. Every label is plain, editable text. Print to any paper size or *Save as PDF*. |
 | [`coffee-flavour-wheel.svg`](coffee-flavour-wheel.svg) | Print shops, Inkscape, Illustrator, Affinity. Text is converted to outlines, so no fonts are needed. |
 | [`coffee-flavour-wheel.pdf`](coffee-flavour-wheel.pdf) | Ready-to-print vector PDF, 50 × 50 cm. Scales to any size without losing sharpness. |
+| [`SOURCES.md`](SOURCES.md) | References for every compound and descriptor. |
 | [`generator/`](generator) | Python scripts to rebuild the wheel with different molecules, descriptors or colours. |
 
 ## Printing your own
@@ -51,7 +52,9 @@ Running the script rewrites `index.html`, the SVG, the PDF and `preview.png`.
 
 ## Notes on the science
 
-Simplified for enjoyment. Roasted coffee contains more than 1,000 volatile compounds. Those shown are documented odour- or taste-active contributors, and how strongly each is perceived depends on its concentration relative to its odour threshold. Stereochemistry is omitted. Spotted something you would change? Open an issue or a pull request.
+Simplified for enjoyment. Roasted coffee contains more than 1,000 volatile compounds; those shown are documented coffee odorants or tastants, and how strongly each is perceived depends on its concentration relative to its odour threshold. Stereochemistry is omitted.
+
+**Sources:** every compound has a reference for its occurrence in coffee and for its descriptor in [SOURCES.md](SOURCES.md), which also lists what was changed after reader review. Formulas are computed from the drawn structures. Spotted something you would change? Open an issue or a pull request.
 
 ## Licence
 

@@ -16,7 +16,7 @@ To change the corner text, edit POSTER below.
 """
 import os, re, sys, html
 import cairosvg
-from wheel import build, SVG, Font
+from wheel import build, SVG, Font, ITEMS
 from palettes import PRESETS
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -29,7 +29,7 @@ FONT = "Manrope"
 # Corner text. Each entry: (x, y_first_baseline_centre, size, weight, colour, anchor, line_height, [lines])
 POSTER = [
     (64, 92, 50, 800, "#1c1c1c", "start", 50, ["Coffee,", "molecularly."]),
-    (64, 196, 14, 500, "#777777", "start", 20, ["56 key odorants & tastants"]),
+    (64, 196, 14, 500, "#777777", "start", 20, [f"{len(ITEMS)} odorants & tastants · sources in SOURCES.md"]),
     (1736, 74, 14, 400, "#444444", "end", 21.7, ["Read from the centre: the sensory",
                                                   "category a taster names, the chemical",
                                                   "class behind it, the formula, the",
